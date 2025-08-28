@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.gretty' version '4.1.2'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springVersion = '6.1.0'
+    hibernateVersion = '6.4.0.Final'
+    jacksonVersion = '2.16.0'
+}
+
+dependencies {
+    // Spring Framework Dependencies
+    implementation "org.springframework:spring-context:${springVersion}"
+    implementation "org.springframework:spring-webmvc:${springVersion}"
+    implementation "org.springframework:spring-orm:${springVersion}"
+    implementation "org.springframework:spring-tx:${springVersion}"
+    
+    // JPA/Hibernate Dependencies
+    implementation "org.hibernate.orm:hibernate-core:${hibernateVersion}"
+    
+    // H2 In-Memory Database
+    implementation 'com.h2database:h2:2.2.224'
+    
+    // Connection Pool
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+    
+    // JSON Processing
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+    
+    // Servlet API
+    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    
+    // Jakarta Annotations
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    
+    // Validation
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
+}
+
+// Gretty configuration for embedded Tomcat
+gretty {
+    httpPort = 8080
+    contextPath = '/spring-demo'
+    servletContainer = 'tomcat10'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+compileJava {
+    options.compilerArgs += ['-parameters']
+}
+
+war {
+    archiveBaseName = 'spring-jpa-web-demo'
+    archiveVersion = '1.0.0'
+}
